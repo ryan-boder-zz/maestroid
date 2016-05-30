@@ -72,7 +72,8 @@ proguard/
 captures/
 
 # Intellij
-*.iml
+# Don't want to ignore because Android stores in .iml files
+# *.iml
 
 # Keystore files
 *.jks
