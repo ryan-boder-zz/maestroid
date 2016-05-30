@@ -3,13 +3,13 @@
   <component name="FacetManager">
     <facet type="android" name="Android">
       <configuration>
-        <option name="GEN_FOLDER_RELATIVE_PATH_APT" value="/../../../maestroid/gen" />
-        <option name="GEN_FOLDER_RELATIVE_PATH_AIDL" value="/../../../maestroid/gen" />
-        <option name="MANIFEST_FILE_RELATIVE_PATH" value="/../../../maestroid/AndroidManifest.xml" />
-        <option name="RES_FOLDER_RELATIVE_PATH" value="/../../../maestroid/res" />
-        <option name="ASSETS_FOLDER_RELATIVE_PATH" value="/../../../maestroid/assets" />
-        <option name="LIBS_FOLDER_RELATIVE_PATH" value="/../../../maestroid/libs" />
-        <option name="PROGUARD_LOGS_FOLDER_RELATIVE_PATH" value="/../../../maestroid/proguard_logs" />
+        <option name="GEN_FOLDER_RELATIVE_PATH_APT" value="/../../gen" />
+        <option name="GEN_FOLDER_RELATIVE_PATH_AIDL" value="/../../gen" />
+        <option name="MANIFEST_FILE_RELATIVE_PATH" value="/../../src/main/AndroidManifest.xml" />
+        <option name="RES_FOLDER_RELATIVE_PATH" value="/../../src/main/res" />
+        <option name="ASSETS_FOLDER_RELATIVE_PATH" value="/../../src/main/assets" />
+        <option name="LIBS_FOLDER_RELATIVE_PATH" value="/../../libs" />
+        <option name="PROGUARD_LOGS_FOLDER_RELATIVE_PATH" value="/../../proguard_logs" />
       </configuration>
     </facet>
   </component>
@@ -30,6 +30,7 @@
       <sourceFolder url="file://$MODULE_DIR$/../../target/scala-2.11/resource_managed/main" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/../../src/test/resources" type="java-test-resource" />
       <sourceFolder url="file://$MODULE_DIR$/../../target/scala-2.11/resource_managed/test" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/../../gen" isTestSource="false" generated="true" />
       <excludeFolder url="file://$MODULE_DIR$/../../target/resolution-cache" />
       <excludeFolder url="file://$MODULE_DIR$/../../target/scala-2.11" />
       <excludeFolder url="file://$MODULE_DIR$/../../target/streams" />
