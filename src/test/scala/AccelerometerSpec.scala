@@ -14,7 +14,6 @@ class AccelerometerSpec extends FlatSpec with BeforeAndAfter with RobolectricSui
   var context: Context = null
   var sensorManager: SensorManager = null
   var sensor: Sensor = null
-
   var subject: Accelerometer = null
 
   before {
@@ -28,6 +27,16 @@ class AccelerometerSpec extends FlatSpec with BeforeAndAfter with RobolectricSui
 
   it should "find and use a system accelerometer when created" in {
     assert(subject.isReady)
+  }
+
+  it should "register for sensor data stream when activated" in {
+    subject.activate
+    verify(sensorManager).registerListener(subject, sensor, SensorManager.SENSOR_DELAY_NORMAL)
+  }
+
+  it should "unregister from sensor data stream when deactivated" in {
+    subject.deactivate
+    verify(sensorManager).unregisterListener(subject)
   }
 
 }

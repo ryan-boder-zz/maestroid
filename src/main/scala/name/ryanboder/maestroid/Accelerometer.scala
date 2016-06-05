@@ -1,11 +1,11 @@
 package name.ryanboder.maestroid
 
 import android.content.Context
-import android.hardware.{Sensor, SensorManager}
+import android.hardware.{Sensor, SensorEvent, SensorEventListener, SensorManager}
 import org.scaloid.common._
 
 
-class Accelerometer(context: Context) extends TagUtil {
+class Accelerometer(context: Context) extends SensorEventListener with TagUtil {
   implicit val tag = LoggerTag("Maestroid/" + getClass.getSimpleName)
 
   private var sensorManager: SensorManager = null
@@ -22,5 +22,26 @@ class Accelerometer(context: Context) extends TagUtil {
       warn("No default accelerometer found on this device")
   }
 
-  def isReady = sensorManager != null && accelerometer != null
+  info("Accelerometer min delay is " + accelerometer.getMinDelay)
+
+  def isReady: Boolean = sensorManager != null && accelerometer != null
+
+  def activate: Unit = {
+    if (sensorManager != null && accelerometer != null)
+      sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL)
+  }
+
+  def deactivate: Unit = {
+    if (sensorManager != null && accelerometer != null)
+      sensorManager.unregisterListener(this)
+  }
+
+  override def onSensorChanged(event: SensorEvent): Unit = {
+
+  }
+
+  override def onAccuracyChanged(sensor: Sensor, accuracy: Int): Unit = {
+
+  }
+
 }
