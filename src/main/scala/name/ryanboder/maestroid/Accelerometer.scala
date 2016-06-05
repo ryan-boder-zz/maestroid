@@ -10,6 +10,7 @@ class Accelerometer(context: Context) extends SensorEventListener with TagUtil {
 
   private var sensorManager: SensorManager = null
   private var accelerometer: Sensor = null
+  private var callback: AccelerometerData => Unit = null
 
   context.getSystemService(Context.SENSOR_SERVICE) match {
     case sensorManager: SensorManager => this.sensorManager = sensorManager
@@ -26,22 +27,34 @@ class Accelerometer(context: Context) extends SensorEventListener with TagUtil {
 
   def isReady: Boolean = sensorManager != null && accelerometer != null
 
-  def activate: Unit = {
-    if (sensorManager != null && accelerometer != null)
+  def activate(callback: AccelerometerData => Unit): Unit = {
+    if (sensorManager != null && accelerometer != null) {
+      this.callback = callback
       sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL)
+    }
   }
 
   def deactivate: Unit = {
-    if (sensorManager != null && accelerometer != null)
+    if (sensorManager != null && accelerometer != null) {
       sensorManager.unregisterListener(this)
+      this.callback = null
+    }
   }
 
   override def onSensorChanged(event: SensorEvent): Unit = {
-
+    if (callback != null) {
+      callback(AccelerometerData(event.timestamp, event.values(0), event.values(1), event.values(2)))
+    }
   }
 
   override def onAccuracyChanged(sensor: Sensor, accuracy: Int): Unit = {
-
+    info("Accelerometer accuracy changed to " + accuracy)
   }
 
 }
+
+
+case class AccelerometerData(timestamp: Long,
+                             x: Float,
+                             y: Float,
+                             z: Float)
