@@ -15,4 +15,16 @@ proguardOptions in Android ++= Seq("-dontobfuscate", "-dontoptimize", "-keepattr
   , "-dontwarn org.scaloid.**" // this can be omitted if current Android Build target is android-16
 )
 
-libraryDependencies += "org.scaloid" %% "scaloid" % "4.2"
+libraryDependencies ++= Seq(
+  "org.scaloid" %% "scaloid" % "4.2",
+  "org.scalactic" %% "scalactic" % "2.2.6"
+)
+
+libraryDependencies ++= Seq(
+  "org.scalatest" %% "scalatest" % "2.2.6" % Test,
+  "org.mockito" % "mockito-core" % "1.10.19" % Test,
+  "com.geteit" %% "robotest" % "0.12" % Test
+)
+
+// Robotest is not thread safe
+fork in Test := true
