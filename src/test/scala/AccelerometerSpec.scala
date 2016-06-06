@@ -41,7 +41,7 @@ class AccelerometerSpec extends FlatSpec with BeforeAndAfter with RobolectricSui
     verify(sensorManager).unregisterListener(subject)
   }
 
-  it should "provide data when new sensor data is available" in {
+  it should "provide data when active and new sensor data is available" in {
     var callbackWasCalled = false
     val expectedData = AccelerometerData(81, 99.0f, 44.0f, 50.0f)
     subject.activate((data: AccelerometerData) => {
@@ -55,6 +55,17 @@ class AccelerometerSpec extends FlatSpec with BeforeAndAfter with RobolectricSui
     sensorEvent.values(2) = expectedData.z
     subject.onSensorChanged(sensorEvent)
     assert(callbackWasCalled)
+  }
+
+  it should "stop providing data when deactivated after being active" in {
+    var callbackWasCalled = false
+    subject.activate((data: AccelerometerData) => {
+      callbackWasCalled = true
+    })
+    subject.deactivate
+    val sensorEvent = ReflectionHelpers.callConstructor(classOf[SensorEvent], ClassParameter.from(Integer.TYPE, 3))
+    subject.onSensorChanged(sensorEvent)
+    assert(!callbackWasCalled)
   }
 
 }
