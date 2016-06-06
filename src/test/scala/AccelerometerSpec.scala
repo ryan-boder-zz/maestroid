@@ -41,6 +41,10 @@ class AccelerometerSpec extends FlatSpec with BeforeAndAfter with RobolectricSui
     verify(sensorManager).unregisterListener(subject)
   }
 
+  it should "not throw exception when new sensor data is available before activate" in {
+    subject.onSensorChanged(createSensorEvent())
+  }
+
   it should "provide data when active and new sensor data is available" in {
     var callbackWasCalled = false
     val expectedData = AccelerometerData(81, 99.0f, 44.0f, 50.0f)
@@ -48,12 +52,7 @@ class AccelerometerSpec extends FlatSpec with BeforeAndAfter with RobolectricSui
       callbackWasCalled = true
       assert(data == expectedData)
     })
-    val sensorEvent = ReflectionHelpers.callConstructor(classOf[SensorEvent], ClassParameter.from(Integer.TYPE, 3))
-    sensorEvent.timestamp = expectedData.timestamp
-    sensorEvent.values(0) = expectedData.x
-    sensorEvent.values(1) = expectedData.y
-    sensorEvent.values(2) = expectedData.z
-    subject.onSensorChanged(sensorEvent)
+    subject.onSensorChanged(createSensorEvent(expectedData))
     assert(callbackWasCalled)
   }
 
@@ -63,9 +62,21 @@ class AccelerometerSpec extends FlatSpec with BeforeAndAfter with RobolectricSui
       callbackWasCalled = true
     })
     subject.deactivate
-    val sensorEvent = ReflectionHelpers.callConstructor(classOf[SensorEvent], ClassParameter.from(Integer.TYPE, 3))
-    subject.onSensorChanged(sensorEvent)
+    subject.onSensorChanged(createSensorEvent())
     assert(!callbackWasCalled)
+  }
+
+  private def createSensorEvent(data: AccelerometerData): SensorEvent = {
+    val sensorEvent = ReflectionHelpers.callConstructor(classOf[SensorEvent], ClassParameter.from(Integer.TYPE, 3))
+    sensorEvent.timestamp = data.timestamp
+    sensorEvent.values(0) = data.x
+    sensorEvent.values(1) = data.y
+    sensorEvent.values(2) = data.z
+    return sensorEvent
+  }
+
+  private def createSensorEvent(): SensorEvent = {
+    return createSensorEvent(AccelerometerData(0, 0.0f, 0.0f, 0.0f))
   }
 
 }
