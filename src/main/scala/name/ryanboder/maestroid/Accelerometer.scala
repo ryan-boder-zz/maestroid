@@ -4,10 +4,7 @@ import android.content.Context
 import android.hardware.{Sensor, SensorEvent, SensorEventListener, SensorManager}
 import org.scaloid.common._
 
-
 class Accelerometer(context: Context) extends SensorEventListener with TagUtil {
-  implicit val tag = LoggerTag("Maestroid/" + getClass.getSimpleName)
-
   private var sensorManager: SensorManager = null
   private var accelerometer: Sensor = null
   private var callback: AccelerometerData => Unit = null
@@ -28,13 +25,15 @@ class Accelerometer(context: Context) extends SensorEventListener with TagUtil {
   def isReady: Boolean = sensorManager != null && accelerometer != null
 
   def activate(callback: AccelerometerData => Unit): Unit = {
+    info("Activated")
     if (sensorManager != null && accelerometer != null) {
       this.callback = callback
       sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL)
     }
   }
 
-  def deactivate: Unit = {
+  def deactivate(): Unit = {
+    info("Deactivated")
     if (sensorManager != null && accelerometer != null) {
       sensorManager.unregisterListener(this)
       this.callback = null
@@ -52,7 +51,6 @@ class Accelerometer(context: Context) extends SensorEventListener with TagUtil {
   }
 
 }
-
 
 case class AccelerometerData(timestamp: Long,
                              x: Float,

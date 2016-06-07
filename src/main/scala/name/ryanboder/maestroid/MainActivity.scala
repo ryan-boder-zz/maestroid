@@ -1,14 +1,44 @@
 package name.ryanboder.maestroid
 
-import android.app.Activity
-import android.os.Bundle
+import org.scaloid.common._
 
-class MainActivity extends Activity with TypedFindView {
-  lazy val textview = findView(TR.text)
+class MainActivity extends SActivity with TagUtil {
+  lazy val accelerometer = new Accelerometer(this)
+  lazy val recorder = new AccelerometerRecorder()
 
-  override def onCreate(savedInstanceState: Bundle): Unit = {
-    super.onCreate(savedInstanceState)
-    setContentView(R.layout.main)
-    textview.setText("Hello world, from Maestroid")
+  onCreate {
+    info("onCreate")
+    contentView = new SVerticalLayout {
+      STextView("Welcome to Maestroid")
+      SButton("Record Accelerometer", toggleAccelerometerRecording)
+    }
+  }
+
+  onDestroy {
+    info("onDestroy")
+  }
+
+  override def onResume() {
+    super.onResume()
+    info("onResume")
+    accelerometer.activate((data: AccelerometerData) => {
+      recorder(data)
+    })
+  }
+
+  override def onPause() {
+    info("onPause")
+    accelerometer.deactivate()
+    super.onPause()
+  }
+
+  private def toggleAccelerometerRecording(): Unit = {
+    if (recorder.isRecording) {
+      recorder.stop()
+      toast("Finished recording")
+    } else {
+      recorder.start()
+      toast("Starting to record")
+    }
   }
 }
