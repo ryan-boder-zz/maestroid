@@ -10,8 +10,8 @@ class GestureDetector {
 
 sealed trait Gesture
 
-case class Tempo(value: Float) extends Gesture
+case class Tempo(beatsPerSecond: Int) extends Gesture
 
-case class Amplitude(value: Float) extends Gesture
+case class Amplitude(meters: Float) extends Gesture
 
-case class Length(value: Float) extends Gesture
+case class Length(meters: Float) extends Gesture
