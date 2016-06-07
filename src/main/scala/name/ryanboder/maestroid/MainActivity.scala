@@ -1,16 +1,18 @@
 package name.ryanboder.maestroid
 
+import android.graphics.Color
 import org.scaloid.common._
 
 class MainActivity extends SActivity with TagUtil {
   lazy val accelerometer = new Accelerometer(this)
   lazy val recorder = new AccelerometerRecorder()
+  var recordButton: SButton = null
 
   onCreate {
     info("onCreate")
     contentView = new SVerticalLayout {
       STextView("Welcome to Maestroid")
-      SButton("Record Accelerometer", toggleAccelerometerRecording)
+      recordButton = SButton("Record Accelerometer", toggleAccelerometerRecording).backgroundColor(Color.DKGRAY)
     }
   }
 
@@ -35,9 +37,11 @@ class MainActivity extends SActivity with TagUtil {
   private def toggleAccelerometerRecording(): Unit = {
     if (recorder.isRecording) {
       recorder.stop()
+      recordButton.setBackgroundColor(Color.DKGRAY)
       toast("Finished recording")
     } else {
       recorder.start()
+      recordButton.setBackgroundColor(Color.RED)
       toast("Starting to record")
     }
   }
