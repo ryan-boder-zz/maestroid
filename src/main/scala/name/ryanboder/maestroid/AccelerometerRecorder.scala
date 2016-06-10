@@ -11,7 +11,7 @@ class AccelerometerRecorder extends TagUtil {
   var writer: PrintWriter = null
 
   def start(): Unit = {
-    file = new File("/sdcard/Sensors/Accel-" + new SimpleDateFormat("yyyyMMdd-hhmmss'.txt'").format(new Date()))
+    file = new File("/sdcard/Sensors/Accel-" + new SimpleDateFormat("yyyyMMdd-hhmmss'.csv'").format(new Date()))
     info("Writing accelerometer events to " + file.getAbsolutePath)
     if (!file.exists)
       file.createNewFile()
