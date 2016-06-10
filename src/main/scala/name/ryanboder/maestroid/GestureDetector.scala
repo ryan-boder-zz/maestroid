@@ -1,6 +1,7 @@
 package name.ryanboder.maestroid
 
 import scala.collection.mutable.ListBuffer
+import scala.math._
 
 class GestureDetector {
 
@@ -9,8 +10,11 @@ class GestureDetector {
 
   def apply(data: AccelerometerData): List[Gesture] = {
     updateHistory(data)
-
     List()
+  }
+
+  def detectTempoBeat() = {
+    history.size >= 4 && (history(0) angle history(3)) > (3 * Pi / 4)
   }
 
   def updateHistory(data: AccelerometerData): Unit = {
