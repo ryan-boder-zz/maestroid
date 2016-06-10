@@ -26,4 +26,13 @@ class GestureDetectorSpec extends FlatSpec with BeforeAndAfter {
     assert(subject.detectTempoBeat())
   }
 
+  it should "not detect a tempo beat when direction doesn't change much" in {
+    subject(AccelerometerData(ms(100), 20.0f, 0.0f, 0.0f))
+    subject(AccelerometerData(ms(120), 13.0f, 3.0f, 0.0f))
+    subject(AccelerometerData(ms(140), 15.0f, 0.0f, 0.0f))
+    subject(AccelerometerData(ms(160), 19.0f, 4.0f, 0.0f))
+    subject(AccelerometerData(ms(180), 13.0f, 0.0f, 0.0f))
+    assert(!subject.detectTempoBeat())
+  }
+
 }
