@@ -1,6 +1,6 @@
 package name.ryanboder.maestroid
 
-import java.lang.Math._
+import scala.math._
 
 class GestureHistoryItem(data: AccelerometerData) {
   val timestamp = data.timestamp
@@ -14,7 +14,15 @@ class GestureHistoryItem(data: AccelerometerData) {
   }
 
   def angle(that: GestureHistoryItem): Double = {
-    acos((this dot that) / (this.magnitude * that.magnitude))
+    var cosine = (this dot that) / (this.magnitude * that.magnitude)
+
+    // Make sure precision error didn't get out of the valid cosine range
+    if (cosine > 1.0)
+      cosine = 1.0
+    if (cosine < -1.0)
+      cosine = -1.0
+
+    acos(cosine)
   }
 
 }
