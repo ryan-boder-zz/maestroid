@@ -15,4 +15,16 @@ class GestureHistoryItemSpec extends FlatSpec {
     assert(subject.magnitude === sqrt(3))
   }
 
+  it should "calculate dot products" in {
+    val a = new GestureHistoryItem(AccelerometerData(0, 1.0f, 1.0f, 1.0f))
+    assert((a dot a) === 3.0)
+
+    val b = new GestureHistoryItem(AccelerometerData(0, -1.0f, -1.0f, -1.0f))
+    assert((a dot b) === -3.0)
+
+    val c = new GestureHistoryItem(AccelerometerData(0, 1.0f, 1.0f, 0.0f))
+    val d = new GestureHistoryItem(AccelerometerData(0, 1.0f, -1.0f, 0.0f))
+    assert((c dot d) === 0.0)
+  }
+
 }

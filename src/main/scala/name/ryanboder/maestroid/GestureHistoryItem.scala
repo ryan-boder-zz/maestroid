@@ -10,7 +10,7 @@ class GestureHistoryItem(data: AccelerometerData) {
   val magnitude = sqrt(x * x + y * y + z * z)
 
   def dot(that: GestureHistoryItem): Double = {
-    this.x * that.x + this.y * that.y + this.z + that.z
+    this.x * that.x + this.y * that.y + this.z * that.z
   }
 
   def angle(that: GestureHistoryItem): Double = {
