@@ -45,9 +45,9 @@ class MainActivity extends SActivity with TagUtil {
 
   def updateAccelerometerViews(data: AccelerometerData): Unit = {
     if (data.timestamp - lastLoggedAccelerometerTime > 1000000000) {
-      accelerometerViews(0).setText("X: " + data.x)
-      accelerometerViews(1).setText("Y: " + data.y)
-      accelerometerViews(2).setText("Z: " + data.z)
+      accelerometerViews(0).setText("X: " + data.acceleration.x)
+      accelerometerViews(1).setText("Y: " + data.acceleration.y)
+      accelerometerViews(2).setText("Z: " + data.acceleration.z)
       lastLoggedAccelerometerTime = data.timestamp
     }
   }

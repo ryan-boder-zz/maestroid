@@ -20,7 +20,9 @@ class AccelerometerRecorder extends TagUtil {
 
   def apply(data: AccelerometerData): AccelerometerData = {
     if (writer != null) {
-      writer.println(data.timestamp + "," + data.x + "," + data.y + "," + data.z)
+      val a = data.acceleration
+      val g = data.gravity
+      writer.println(s"${data.timestamp},${a.x},${a.y},${a.z},${g.x},${g.y},${g.z}")
     }
     return data
   }

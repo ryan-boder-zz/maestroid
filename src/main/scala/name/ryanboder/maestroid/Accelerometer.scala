@@ -6,8 +6,10 @@ import org.scaloid.common._
 
 class Accelerometer(context: Context) extends SensorEventListener with TagUtil {
   private var sensorManager: SensorManager = null
-  private var accelerometer: Sensor = null
+  private var accelerationSensor: Sensor = null
+  private var gravitySensor: Sensor = null
   private var callback: AccelerometerData => Unit = null
+  private var gravity: Vector3D = null
 
   context.getSystemService(Context.SENSOR_SERVICE) match {
     case sensorManager: SensorManager => this.sensorManager = sensorManager
@@ -15,44 +17,50 @@ class Accelerometer(context: Context) extends SensorEventListener with TagUtil {
   }
 
   if (sensorManager != null) {
-    accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
-    if (accelerometer == null)
-      warn("No default accelerometer found on this device")
+    accelerationSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION)
+    if (accelerationSensor == null)
+      warn("No default acceleration sensor found on this device")
+    gravitySensor = sensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY)
+    if (gravitySensor == null)
+      warn("No default gravity sensor found on this device")
   }
 
-  info("Accelerometer min delay is " + accelerometer.getMinDelay)
-
-  def isReady: Boolean = sensorManager != null && accelerometer != null
+  def isReady: Boolean = sensorManager != null && accelerationSensor != null && gravitySensor != null
 
   def activate(callback: AccelerometerData => Unit): Unit = {
-    info("Activated")
-    if (sensorManager != null && accelerometer != null) {
+    if (isReady) {
+      info("Activating")
       this.callback = callback
-      sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL)
+      sensorManager.registerListener(this, gravitySensor, SensorManager.SENSOR_DELAY_NORMAL)
+      sensorManager.registerListener(this, accelerationSensor, SensorManager.SENSOR_DELAY_NORMAL)
     }
   }
 
   def deactivate(): Unit = {
-    info("Deactivated")
-    if (sensorManager != null && accelerometer != null) {
+    if (isReady) {
+      info("Deactivating")
       sensorManager.unregisterListener(this)
       this.callback = null
+      gravity = null
     }
   }
 
   override def onSensorChanged(event: SensorEvent): Unit = {
-    if (callback != null) {
-      callback(AccelerometerData(event.timestamp, event.values(0), event.values(1), event.values(2)))
+    if (event.sensor == gravitySensor) {
+      gravity = Vector3D(event.values(0), event.values(1), event.values(2))
+    } else if (event.sensor == accelerationSensor) {
+      if (callback != null && gravity != null) {
+        val acceleration = Vector3D(event.values(0), event.values(1), event.values(2))
+        callback(AccelerometerData(event.timestamp, acceleration, gravity))
+      }
     }
   }
 
   override def onAccuracyChanged(sensor: Sensor, accuracy: Int): Unit = {
-    info("Accelerometer accuracy changed to " + accuracy)
+    info(sensor.getStringType + " accuracy changed to " + accuracy)
   }
-
 }
 
 case class AccelerometerData(timestamp: Long,
-                             x: Float,
-                             y: Float,
-                             z: Float)
+                             acceleration: Vector3D,
+                             gravity: Vector3D)

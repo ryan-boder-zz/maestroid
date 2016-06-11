@@ -24,16 +24,16 @@ class GestureDetector {
     val previousTempo = tempo
     if (detectTempoBeat()) {
       if (lastTempoBeat != -1) {
-        val secondsSinceLastBeat = (event.timestamp - lastTempoBeat) / 1000000000.0
+        val secondsSinceLastBeat = (event.data.timestamp - lastTempoBeat) / 1000000000.0
         tempo = 1.0f / secondsSinceLastBeat.toFloat
       }
-      lastTempoBeat = event.timestamp
+      lastTempoBeat = event.data.timestamp
     }
     abs(tempo - previousTempo) > 0.2 || previousTempo <= 0.0 && tempo > 0.0
   }
 
   def detectTempoBeat(): Boolean = {
-    history.size >= 4 && (history(0) angle history(3)) > (3 * Pi / 4)
+    history.size >= 4 && (history(0).data.acceleration angle history(3).data.acceleration) > (3 * Pi / 4)
   }
 
   def updateHistory(data: AccelerometerData): Unit = {
@@ -51,3 +51,6 @@ case class Tempo(beatsPerSecond: Float) extends Gesture
 case class Amplitude(meters: Float) extends Gesture
 
 case class Length(meters: Float) extends Gesture
+
+class GestureHistoryItem(val data: AccelerometerData) {
+}
