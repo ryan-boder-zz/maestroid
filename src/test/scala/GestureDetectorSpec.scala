@@ -35,4 +35,21 @@ class GestureDetectorSpec extends FlatSpec with BeforeAndAfter {
     assert(!subject.detectTempoBeat())
   }
 
+  ignore should "detect a tempo change when time since last beat differs from current tempo " in {
+    val gestures = runFromCsvFile(subject, "Accel-1BPS.csv")
+    assert(gestures.length == 5)
+  }
+
+  private def runFromCsvFile(detector: GestureDetector, fileName: String): List[Gesture] = {
+    val source = io.Source.fromFile("src/test/resources/" + fileName)
+    (for (line <- source.getLines() if line.trim.length > 0) yield {
+      val columns = line.split(",").map(_.trim)
+      val timestamp = columns(0).toLong
+      val x = columns(1).toFloat
+      val y = columns(2).toFloat
+      val z = columns(3).toFloat
+      detector(AccelerometerData(timestamp, x, y, z))
+    }).flatten.toList
+  }
+
 }

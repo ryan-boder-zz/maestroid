@@ -7,13 +7,32 @@ class GestureDetector {
 
   var history = ListBuffer[GestureHistoryItem]()
   val maxHistorySize = 5
+  var tempo = 0.0f
+  var lastTempoBeat = -1L
 
   def apply(data: AccelerometerData): List[Gesture] = {
     updateHistory(data)
+
+    if (detectTempoChange())
+      return List(Tempo(tempo))
+
     List()
   }
 
-  def detectTempoBeat() = {
+  def detectTempoChange(): Boolean = {
+    val event = history(0)
+    val previousTempo = tempo
+    if (detectTempoBeat()) {
+      if (lastTempoBeat != -1) {
+        val secondsSinceLastBeat = (event.timestamp - lastTempoBeat) / 1000000000.0
+        tempo = 1.0f / secondsSinceLastBeat.toFloat
+      }
+      lastTempoBeat = event.timestamp
+    }
+    abs(tempo - previousTempo) > 0.2 || previousTempo <= 0.0 && tempo > 0.0
+  }
+
+  def detectTempoBeat(): Boolean = {
     history.size >= 4 && (history(0) angle history(3)) > (3 * Pi / 4)
   }
 
@@ -27,7 +46,7 @@ class GestureDetector {
 
 sealed trait Gesture
 
-case class Tempo(beatsPerSecond: Int) extends Gesture
+case class Tempo(beatsPerSecond: Float) extends Gesture
 
 case class Amplitude(meters: Float) extends Gesture
 
