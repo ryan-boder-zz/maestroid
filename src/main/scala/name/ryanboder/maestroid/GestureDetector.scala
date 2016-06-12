@@ -12,6 +12,7 @@ class GestureDetector(context: Context) extends TagUtil {
   var history = ListBuffer[GestureHistoryItem]()
   val historySize = 4
 
+  val tempoChangeThreshold = 0.1
   var tempo = 0.0
   var lastTempoBeat = -1L
 
@@ -30,7 +31,7 @@ class GestureDetector(context: Context) extends TagUtil {
   }
 
   def detectTempoChange(): Boolean = {
-    val event = history(0)
+    val event = history.head
     val previousTempo = tempo
     if (detectTempoBeat()) {
       info("Beat detected at " + event.data.timestamp)
@@ -40,7 +41,7 @@ class GestureDetector(context: Context) extends TagUtil {
       }
       lastTempoBeat = event.data.timestamp
     }
-    abs(tempo - previousTempo) > 0.2 || previousTempo <= 0.0 && tempo > 0.0
+    abs(tempo - previousTempo) > tempoChangeThreshold || previousTempo <= 0.0 && tempo > 0.0
   }
 
   def detectTempoBeat(): Boolean = {
@@ -55,7 +56,7 @@ class GestureDetector(context: Context) extends TagUtil {
     crossedAngleThreshold
   }
 
-  def isActive: Boolean = history.length > 0 && (history(0).data.timestamp - lastMagnitudeAboveThreshold) < activeTimeLimit
+  def isActive: Boolean = history.nonEmpty && (history.head.data.timestamp - lastMagnitudeAboveThreshold) < activeTimeLimit
 
   def updateHistory(data: AccelerometerData): Unit = {
     history.prepend(new GestureHistoryItem(data))

@@ -32,7 +32,6 @@ class MainActivity extends SActivity with TagUtil {
       updateAccelerometerViews(data)
       for (gesture <- detector(data)) {
         info(gesture.toString)
-        toast(gesture.toString)
       }
     })
   }
