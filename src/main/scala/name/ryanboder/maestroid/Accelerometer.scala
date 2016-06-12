@@ -5,8 +5,6 @@ import android.hardware.{Sensor, SensorEvent, SensorEventListener, SensorManager
 import org.scaloid.common._
 
 class Accelerometer(context: Context) extends SensorEventListener with TagUtil {
-  implicit val ctx = context
-
   val requestedSensorFrequencyUs = 100000
 
   private var sensorManager: SensorManager = null

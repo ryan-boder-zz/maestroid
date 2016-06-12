@@ -7,8 +7,6 @@ import scala.collection.mutable.ListBuffer
 import scala.math._
 
 class GestureDetector(context: Context) extends TagUtil {
-  implicit val ctx = context
-
   var history = ListBuffer[GestureHistoryItem]()
   val historySize = 10
 

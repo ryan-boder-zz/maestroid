@@ -10,6 +10,8 @@ class MainActivity extends SActivity with TagUtil {
   lazy val player = new MusicPlayer(this)
 
   private var accelerometerViews: Array[STextView] = null
+  private var tempoView: STextView = null
+  private var volumeView: STextView = null
   private var recordButton: SButton = null
 
   onCreate {
@@ -17,6 +19,8 @@ class MainActivity extends SActivity with TagUtil {
     contentView = new SVerticalLayout {
       STextView("Welcome to Maestroid")
       accelerometerViews = Array(STextView(), STextView(), STextView())
+      tempoView = STextView("Tempo: 0.0")
+      volumeView = STextView("Volume: 0.0")
       recordButton = SButton("Record Accelerometer", toggleAccelerometerRecording).backgroundColor(Color.DKGRAY)
     }
   }
@@ -34,6 +38,11 @@ class MainActivity extends SActivity with TagUtil {
       for (gesture <- detector(data)) {
         info(gesture.toString)
         player(gesture)
+        gesture match {
+          case t: Tempo => tempoView.setText("Tempo: " + t.beatsPerSecond)
+          case v: Volume => volumeView.setText("Volume: " + v.volume)
+          case g: Gesture => error("Unexpected gesture " + g)
+        }
       }
     })
   }
