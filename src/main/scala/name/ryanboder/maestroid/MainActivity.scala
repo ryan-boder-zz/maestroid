@@ -6,7 +6,7 @@ import org.scaloid.common._
 class MainActivity extends SActivity with TagUtil {
   lazy val accelerometer = new Accelerometer(this)
   lazy val recorder = new AccelerometerRecorder()
-  lazy val detector = new GestureDetector()
+  lazy val detector = new GestureDetector(this)
 
   private var accelerometerViews: Array[STextView] = null
   private var recordButton: SButton = null

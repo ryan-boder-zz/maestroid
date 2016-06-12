@@ -1,24 +1,29 @@
 package name.ryanboder.maestroid
 
-import org.scalatest.{BeforeAndAfter, FlatSpec}
+import android.content.Context
+import org.mockito.Mockito._
+import org.robolectric.annotation.Config
+import org.scalatest.{BeforeAndAfter, FlatSpec, RobolectricSuite}
 
-class GestureDetectorSpec extends FlatSpec with BeforeAndAfter {
+@Config(sdk = Array(21))
+class GestureDetectorSpec extends FlatSpec with BeforeAndAfter with RobolectricSuite {
   behavior of "GestureDetector"
 
+  var context: Context = null
   var subject: GestureDetector = null
 
   before {
-    subject = new GestureDetector
+    context = mock(classOf[Context])
+    subject = new GestureDetector(context)
   }
 
   it should "not detect any gestures on the first sensor data" in {
     assert(subject(AccelerometerData(1L, Vector3D(0.0, 0.0, 0.0), Vector3D(0.0, 0.0, 0.0))) == List())
   }
 
-  it should "detect a tempo beat when direction changes drastically from down to up within 80ms" in {
+  it should "detect a tempo beat when direction changes drastically from down to up" in {
     subject(AccelerometerData(ms(100), Vector3D(20.0, 0.0, 0.0), Vector3D(9.8, 0.0, 0.0)))
     subject(AccelerometerData(ms(120), Vector3D(20.0, 0.0, 0.0), Vector3D(9.8, 0.0, 0.0)))
-    subject(AccelerometerData(ms(140), Vector3D(0.0, 0.0, 0.0), Vector3D(9.8, 0.0, 0.0)))
     subject(AccelerometerData(ms(160), Vector3D(-15.0, 0.0, 0.0), Vector3D(9.8, 0.0, 0.0)))
     subject(AccelerometerData(ms(180), Vector3D(-15.0, 0.0, 0.0), Vector3D(9.8, 0.0, 0.0)))
     assert(subject.detectTempoBeat())
@@ -34,7 +39,7 @@ class GestureDetectorSpec extends FlatSpec with BeforeAndAfter {
   }
 
   ignore should "detect a tempo change when time since last beat differs from current tempo " in {
-    val gestures = runFromCsvFile(subject, "Accel-1BPS.csv")
+    val gestures = runFromCsvFile(subject, "Accel-20160611-035346.csv")
     assert(gestures.length == 5)
   }
 

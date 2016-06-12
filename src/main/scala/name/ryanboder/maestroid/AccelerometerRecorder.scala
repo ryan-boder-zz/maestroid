@@ -22,9 +22,10 @@ class AccelerometerRecorder extends TagUtil {
     if (writer != null) {
       val a = data.acceleration
       val g = data.gravity
-      writer.println(s"${data.timestamp},${a.x},${a.y},${a.z},${g.x},${g.y},${g.z}")
+      val angle = data.acceleration angle data.gravity
+      writer.println(s"${data.timestamp},${a.x},${a.y},${a.z},${g.x},${g.y},${g.z},${a.magnitude},$angle")
     }
-    return data
+    data
   }
 
   def isRecording(): Boolean = writer != null

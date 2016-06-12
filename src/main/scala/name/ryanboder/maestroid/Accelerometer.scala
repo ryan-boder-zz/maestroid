@@ -5,6 +5,10 @@ import android.hardware.{Sensor, SensorEvent, SensorEventListener, SensorManager
 import org.scaloid.common._
 
 class Accelerometer(context: Context) extends SensorEventListener with TagUtil {
+  implicit val ctx = context
+
+  val requestedSensorFrequencyUs = 100000
+
   private var sensorManager: SensorManager = null
   private var accelerationSensor: Sensor = null
   private var gravitySensor: Sensor = null
@@ -31,8 +35,8 @@ class Accelerometer(context: Context) extends SensorEventListener with TagUtil {
     if (isReady) {
       info("Activating")
       this.callback = callback
-      sensorManager.registerListener(this, gravitySensor, SensorManager.SENSOR_DELAY_NORMAL)
-      sensorManager.registerListener(this, accelerationSensor, SensorManager.SENSOR_DELAY_NORMAL)
+      sensorManager.registerListener(this, gravitySensor, requestedSensorFrequencyUs)
+      sensorManager.registerListener(this, accelerationSensor, requestedSensorFrequencyUs)
     }
   }
 
@@ -46,6 +50,8 @@ class Accelerometer(context: Context) extends SensorEventListener with TagUtil {
   }
 
   override def onSensorChanged(event: SensorEvent): Unit = {
+    val startedAt = System.currentTimeMillis()
+
     if (event.sensor == gravitySensor) {
       gravity = Vector3D(event.values(0), event.values(1), event.values(2))
     } else if (event.sensor == accelerationSensor) {
@@ -53,6 +59,11 @@ class Accelerometer(context: Context) extends SensorEventListener with TagUtil {
         val acceleration = Vector3D(event.values(0), event.values(1), event.values(2))
         callback(AccelerometerData(event.timestamp, acceleration, gravity))
       }
+    }
+
+    val finishedAt = System.currentTimeMillis()
+    if (finishedAt - startedAt > 80) {
+      error("Took " + (finishedAt - startedAt) + "ms")
     }
   }
 

@@ -36,8 +36,8 @@ class AccelerometerSpec extends FlatSpec with BeforeAndAfter with RobolectricSui
 
   it should "register for sensor data stream when activated" in {
     subject.activate((data: AccelerometerData) => {})
-    verify(sensorManager).registerListener(subject, gravitySensor, SensorManager.SENSOR_DELAY_NORMAL)
-    verify(sensorManager).registerListener(subject, accelerationSensor, SensorManager.SENSOR_DELAY_NORMAL)
+    verify(sensorManager).registerListener(subject, gravitySensor, subject.requestedSensorFrequencyUs)
+    verify(sensorManager).registerListener(subject, accelerationSensor, subject.requestedSensorFrequencyUs)
   }
 
   it should "unregister from sensor data stream when deactivated" in {
