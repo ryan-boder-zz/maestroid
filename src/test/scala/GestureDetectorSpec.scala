@@ -40,11 +40,10 @@ class GestureDetectorSpec extends FlatSpec with BeforeAndAfter with RobolectricS
   }
 
   it should "detect a tempo change when time since last beat differs from current tempo " in {
-    val gestures = runFromCsvFile(subject, "Accel-10s-1bps-StraightUpDown.csv")
-    assert(gestures.length == 1)
-    gestures(0) match {
+    val tempoGestures = runFromCsvFile(subject, "Accel-10s-1bps-StraightUpDown.csv").collect { case t: Tempo => t }
+    assert(tempoGestures.length == 1)
+    tempoGestures(0) match {
       case t: Tempo => assert(t.beatsPerSecond === 1.0 +- 0.1)
-      case _ => assert(false)
     }
   }
 

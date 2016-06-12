@@ -18,6 +18,7 @@ class MusicPlayer(context: Context) extends TagUtil {
   def apply(gesture: Gesture): Unit = {
     gesture match {
       case t: Tempo => changeTempo(t)
+      case v: Volume => changeVolume(v)
       case g: Gesture => error("Unknown gesture " + g)
     }
   }
@@ -30,5 +31,12 @@ class MusicPlayer(context: Context) extends TagUtil {
     val params = new PlaybackParams()
     params.setSpeed(tempo.beatsPerSecond.toFloat)
     player.setPlaybackParams(params)
+  }
+
+  private def changeVolume(v: Volume): Unit = {
+    if (!player.isPlaying)
+      return
+    info("Setting volume to " + v)
+    player.setVolume(v.volume.toFloat, v.volume.toFloat)
   }
 }
