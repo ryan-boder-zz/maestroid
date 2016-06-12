@@ -3,6 +3,7 @@ package name.ryanboder.maestroid
 import android.content.Context
 import org.mockito.Mockito._
 import org.robolectric.annotation.Config
+import org.scalactic.Tolerance._
 import org.scalatest.{BeforeAndAfter, FlatSpec, RobolectricSuite}
 
 @Config(sdk = Array(21))
@@ -38,9 +39,13 @@ class GestureDetectorSpec extends FlatSpec with BeforeAndAfter with RobolectricS
     assert(!subject.detectTempoBeat())
   }
 
-  ignore should "detect a tempo change when time since last beat differs from current tempo " in {
-    val gestures = runFromCsvFile(subject, "Accel-20160611-035346.csv")
-    assert(gestures.length == 5)
+  it should "detect a tempo change when time since last beat differs from current tempo " in {
+    val gestures = runFromCsvFile(subject, "Accel-10s-1bps-StraightUpDown.csv")
+    assert(gestures.length == 1)
+    gestures(0) match {
+      case t: Tempo => assert(t.beatsPerSecond === 1.0 +- 0.1)
+      case _ => assert(false)
+    }
   }
 
   private def runFromCsvFile(detector: GestureDetector, fileName: String): List[Gesture] = {

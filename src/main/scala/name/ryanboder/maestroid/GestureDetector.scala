@@ -12,13 +12,13 @@ class GestureDetector(context: Context) extends TagUtil {
   var history = ListBuffer[GestureHistoryItem]()
   val historySize = 4
 
-  var tempo = 0.0f
-  var lastTempoBeat = toNanoseconds(-1)
+  var tempo = 0.0
+  var lastTempoBeat = -1L
 
   val activateMagnitudeThreshold = 16
   val remainActiveMagnitudeThreshold = 4
   val activeTimeLimit = toNanoseconds(4)
-  var lastMagnitudeAboveThreshold = toNanoseconds(-1)
+  var lastMagnitudeAboveThreshold = -1L
 
   def apply(data: AccelerometerData): List[Gesture] = {
     updateHistory(data)
@@ -34,14 +34,13 @@ class GestureDetector(context: Context) extends TagUtil {
     val previousTempo = tempo
     if (detectTempoBeat()) {
       info("Beat detected at " + event.data.timestamp)
-      //            if (lastTempoBeat != -1) {
-      //              val secondsSinceLastBeat = (event.data.timestamp - lastTempoBeat) / 1000000000.0
-      //              tempo = 1.0f / secondsSinceLastBeat.toFloat
-      //            }
-      //            lastTempoBeat = event.data.timestamp
+      if (lastTempoBeat != -1) {
+        val secondsSinceLastBeat = fromNanoseconds(event.data.timestamp - lastTempoBeat)
+        tempo = 1.0 / secondsSinceLastBeat
+      }
+      lastTempoBeat = event.data.timestamp
     }
-    //    abs(tempo - previousTempo) > 0.2 || previousTempo <= 0.0 && tempo > 0.0
-    false // XXX
+    abs(tempo - previousTempo) > 0.2 || previousTempo <= 0.0 && tempo > 0.0
   }
 
   def detectTempoBeat(): Boolean = {
@@ -77,6 +76,8 @@ class GestureDetector(context: Context) extends TagUtil {
   }
 
   private def toNanoseconds(s: Double): Long = s.toLong * 1000000000
+
+  private def fromNanoseconds(ns: Long): Double = ns.toDouble / 1000000000.0
 }
 
 sealed trait Gesture
