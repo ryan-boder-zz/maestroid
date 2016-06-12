@@ -7,6 +7,7 @@ class MainActivity extends SActivity with TagUtil {
   lazy val accelerometer = new Accelerometer(this)
   lazy val recorder = new AccelerometerRecorder()
   lazy val detector = new GestureDetector(this)
+  lazy val player = new MusicPlayer(this)
 
   private var accelerometerViews: Array[STextView] = null
   private var recordButton: SButton = null
@@ -32,6 +33,7 @@ class MainActivity extends SActivity with TagUtil {
       updateAccelerometerViews(data)
       for (gesture <- detector(data)) {
         info(gesture.toString)
+        player(gesture)
       }
     })
   }
