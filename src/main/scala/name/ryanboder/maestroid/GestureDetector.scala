@@ -21,7 +21,7 @@ class GestureDetector(context: Context) extends TagUtil {
 
   val volumeChangeThreshold = 0.05
   var volume = 0.0
-  var maxMagnitude = 0.0
+  var maxMagnitude = 50.0
 
   def apply(data: AccelerometerData): List[Gesture] = {
     updateHistory(data)
@@ -63,11 +63,10 @@ class GestureDetector(context: Context) extends TagUtil {
     if (!isActive || history.size < historySize)
       return false
     val maxRecentMagnitude = history.map(_.data.acceleration.magnitude).max
-    if (maxRecentMagnitude > maxMagnitude) {
-      maxMagnitude = maxRecentMagnitude
-    }
     val previousVolume = volume
     volume = maxRecentMagnitude / maxMagnitude
+    if (volume > 1.0)
+      volume = 1.0
     volume - previousVolume > volumeChangeThreshold || previousVolume <= 0.0 && volume > 0.0
   }
 
