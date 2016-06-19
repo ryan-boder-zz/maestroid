@@ -9,7 +9,7 @@ import org.scaloid.common._
 
 
 class MusicPlayer(context: Context) extends TagUtil {
-  val audioFilePath = "/sdcard/Music/Conductor.mp3"
+  val audioFilePath = "/sdcard/Music/Maestroid.mp3"
   info("Playing " + audioFilePath)
 
   val audioFile = new File(audioFilePath)
